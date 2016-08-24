@@ -44,6 +44,7 @@ public class FeedResponceTask extends AsyncTask<String, Integer, List<JSONObject
         } catch (Exception e) {
             Log.e("RSS ERROR", "Error loading RSS Feed Stream >> " + e.getMessage() + " //" + e.toString());
         }
+        Log.d(getClass().getName(), "download");
 
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(ctx);
 

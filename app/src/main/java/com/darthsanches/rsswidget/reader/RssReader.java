@@ -25,7 +25,7 @@ import com.darthsanches.rsswidget.util.CommonStringsHelper;
 import com.darthsanches.rsswidget.util.RSSHandler;
 
 /**
- * @author Ivan Davidov
+ * @author alexandroid
  *
  */
 public class RssReader
@@ -58,8 +58,6 @@ public class RssReader
 			article.setArticleId(-9999);
 			article.setTitle(res.getString(R.string.rss_unavailable_title));
 			article.setDescription(res.getString(R.string.rss_unavailable_description));
-			article.setPubDate(res.getString(R.string.rss_unavailable_date));
-			article.setUrl(null);
 			
 			articles.add(article);
 		}
@@ -70,14 +68,6 @@ public class RssReader
 			article.setArticleId(-9999);
 			article.setTitle(res.getString(R.string.author_title));
 			article.setDescription(res.getString(R.string.author_description));
-			article.setPubDate(res.getString(R.string.author_date));
-			
-			try {
-				article.setUrl(new URL(res.getString(R.string.author_url)));
-			} catch (MalformedURLException e) {
-				// Oops... fallback to default.
-				article.setUrl(null);
-			}
 			
 			articles.add(article);
 		}
@@ -122,24 +112,6 @@ public class RssReader
 	private static void buildJsonObject(Article article, JSONObject current) throws JSONException {
 		String title = article.getTitle();
 		String description = article.getDescription();
-		String date = article.getPubDate();		
-		
-		if(date != null && date.length() > 0)
-		{
-			DateFormat rssFormatter = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.UK);
-			DateFormat bulFormatter = new SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.US);
-			
-			try {
-				Date realDate = rssFormatter.parse(date);
-				
-				String bulDate = bulFormatter.format(realDate);
-				
-				date = bulDate;
-			} catch (ParseException e) {
-				// Can't parse, stick to the original.
-				Log.e("DATE PARSER", e.getMessage());
-			}
-		}
 		
 		int tagPos = description.indexOf("<");
 		
@@ -147,28 +119,9 @@ public class RssReader
 		{
 			description = description.substring(0, tagPos) + '.';
 		}
-		
-		StringBuffer sb = new StringBuffer();
-		sb.append(BOLD_OPEN).append(title).append(BOLD_CLOSE);
-		sb.append(PARAGRAPH);
-		sb.append(description);
-		sb.append(PARAGRAPH);
-		sb.append(SMALL_OPEN).append(ITALIC_OPEN).append(date).append(ITALIC_CLOSE).append(SMALL_CLOSE);
-		
-		current.put("text", Html.fromHtml(sb.toString()));
-		current.put("title", BOLD_OPEN + title + BOLD_CLOSE);
-		
-		String urlString = null;
-		
-		if(article.getUrl() == null)
-		{
-			urlString = "";
-		}
-		else
-		{
-			urlString = article.getUrl().toString();
-		}
-		
-		current.put("url", urlString);
+
+		current.put("text", description);
+		current.put("title", title);
+
 	}
 }

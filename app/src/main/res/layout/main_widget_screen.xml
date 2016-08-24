@@ -40,15 +40,14 @@
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="#6600ff00"
         android:gravity="center"
         android:text="@string/post_title"
         android:textColor="#000"
-        android:textSize="18sp"
+        android:textSize="11sp"
+        android:layout_centerInParent="true"
         android:layout_below="@+id/setting_button"
-        android:layout_alignLeft="@+id/setting_button"
-        android:layout_alignStart="@+id/setting_button"
-        android:layout_marginTop="102dp">
+        android:paddingLeft="50dp"
+        android:paddingRight="50dp">
     </TextView>
 
     <TextView
@@ -58,9 +57,11 @@
         android:gravity="center"
         android:text="@string/post_text"
         android:textColor="#000"
-        android:textSize="18sp"
-        android:layout_alignBaseline="@+id/button_next"
-        android:layout_alignBottom="@+id/button_next"
-        android:layout_centerHorizontal="true">
+        android:textSize="9sp"
+        android:layout_centerInParent="true"
+        android:layout_below="@+id/title"
+        android:paddingTop="8dp"
+        android:paddingLeft="50dp"
+        android:paddingRight="50dp">
     </TextView>
 </RelativeLayout>

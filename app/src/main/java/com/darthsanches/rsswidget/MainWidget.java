@@ -1,5 +1,7 @@
 package com.darthsanches.rsswidget;
 
+import android.app.ActivityManager;
+import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
@@ -19,6 +21,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -33,29 +36,38 @@ public class MainWidget extends AppWidgetProvider {
 
     boolean isSettings;
 
-    @Override
+/*    @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgets) {
+        Log.d(getClass().getName(), "refresh");
 
         try {
             //new FeedResponceTask(context).execute("");
-            CommonStringsHelper res = new CommonStringsHelper(context);
-            jobs = RssReader.getLatestRssFeed(res);
+            *//*CommonStringsHelper res = new CommonStringsHelper(context);
+            jobs = RssReader.getLatestRssFeed(res);*//*
         } catch (Exception e) {
             Log.e("RSS ERROR", "Error loading RSS Feed Stream >> " + e.getMessage() + " //" + e.toString());
         }
 
         MainWidget.updateWidget(context, appWidgetManager, jobs);
-    }
+
+    }*/
 
     public static void updateWidget(Context context, AppWidgetManager appWidgetManager, List<JSONObject> jobs) {
+
         RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.main_widget_screen);
 
         try {
 
             if(!jobs.isEmpty()) {
-                Spanned title = (Spanned) jobs.get(0).get("text");
 
-                Spanned text = (Spanned) jobs.get(0).get("text");
+                Log.d("jsaon", jobs.get(0).toString());
+                String title = (String) jobs.get(0).get("title");
+
+                String text = (String) jobs.get(0).get("text");
+
+                Log.d("updateWidget", title);
+
+                Log.d("updateWidget", text);
 
                 remoteViews.setTextViewText(R.id.title, title);
 
@@ -138,5 +150,15 @@ public class MainWidget extends AppWidgetProvider {
             isSettings = false;
         }
         Log.i("onReceive", "intent data" + intent.getAction());
+    }
+
+    public boolean isMyServiceRunning(Context ctx, Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) ctx.getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 }
