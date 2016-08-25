@@ -7,7 +7,6 @@ import android.content.Context;
 import android.util.Log;
 
 import com.darthsanches.rsswidget.util.Article;
-import com.darthsanches.rsswidget.util.CommonStringsHelper;
 import com.darthsanches.rsswidget.util.RSSHandler;
 
 import org.json.JSONException;
@@ -20,13 +19,6 @@ import java.util.List;
  * @author alexandroid
  */
 public class RssReader {
-    public final static String BOLD_OPEN = "<B>";
-    public final static String BOLD_CLOSE = "</B>";
-    public final static String PARAGRAPH = "<P/>";
-    public final static String ITALIC_OPEN = "<I>";
-    public final static String ITALIC_CLOSE = "</I>";
-    public final static String SMALL_OPEN = "<SMALL>";
-    public final static String SMALL_CLOSE = "</SMALL>";
 
     /**
      * This method defines a feed URL and then calles our SAX Handler to read the article list
@@ -34,7 +26,7 @@ public class RssReader {
      *
      * @return List<JSONObject> - suitable for the List View activity
      */
-    public static List<JSONObject> getLatestRssFeed(Context context, CommonStringsHelper res) {
+    public static List<JSONObject> getLatestRssFeed(Context context) {
         String feed = context.getSharedPreferences("rsswidget", Context.MODE_PRIVATE).getString("url", null);
 
         if (feed == null) {

@@ -1,27 +1,17 @@
 package com.darthsanches.rsswidget;
 
-import android.app.ActivityManager;
-import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.text.Html;
-import android.text.Spanned;
 import android.util.Log;
-import android.view.View;
 import android.widget.RemoteViews;
-
-import com.darthsanches.rsswidget.reader.RssReader;
-import com.darthsanches.rsswidget.util.CommonStringsHelper;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -31,6 +21,8 @@ public class MainWidget extends AppWidgetProvider {
 
     final static String ACTION_PREV = "com.darthsanches.rsswidget.prev_action";
     final static String ACTION_NEXT = "com.darthsanches.rsswidget.next_action";
+    public final static String ACTION_UPDATE = "com.darthsanches.rsswidget.update_action";
+    public final static String CATEGORY = "your.package.CATEGORY_BACKGROUND";
 
     private static List<JSONObject> jobs;
 
@@ -159,6 +151,7 @@ public class MainWidget extends AppWidgetProvider {
             }
         }
         updateWidget(context, AppWidgetManager.getInstance(context), jobs);
+        Log.d("onReceive", intent.getAction());
     }
 
 }

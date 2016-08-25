@@ -6,7 +6,6 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.darthsanches.rsswidget.reader.RssReader;
-import com.darthsanches.rsswidget.util.CommonStringsHelper;
 
 import org.json.JSONObject;
 
@@ -39,8 +38,7 @@ public class FeedResponceTask extends AsyncTask<String, Integer, List<JSONObject
         List<JSONObject> jobs = new ArrayList<JSONObject>();
 
         try {
-            CommonStringsHelper res = new CommonStringsHelper(ctx.getResources());
-            jobs = RssReader.getLatestRssFeed(ctx,res);
+            jobs = RssReader.getLatestRssFeed(ctx);
         } catch (Exception e) {
             Log.e("RSS ERROR", "Error loading RSS Feed Stream >> " + e.getMessage() + " //" + e.toString());
         }
