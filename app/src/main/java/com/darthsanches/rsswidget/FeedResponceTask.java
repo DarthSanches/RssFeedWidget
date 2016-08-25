@@ -40,7 +40,7 @@ public class FeedResponceTask extends AsyncTask<String, Integer, List<JSONObject
 
         try {
             CommonStringsHelper res = new CommonStringsHelper(ctx.getResources());
-            jobs = RssReader.getLatestRssFeed(res);
+            jobs = RssReader.getLatestRssFeed(ctx,res);
         } catch (Exception e) {
             Log.e("RSS ERROR", "Error loading RSS Feed Stream >> " + e.getMessage() + " //" + e.toString());
         }

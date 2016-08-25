@@ -19,19 +19,5 @@ public class App extends Application {
         super.onCreate();
 
         Log.d(getClass().getName(), "create");
-
-        Intent myIntent = new Intent(getBaseContext(), FeedService.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getBaseContext(),  0, myIntent, 0);
-
-
-        AlarmManager alarmManager = (AlarmManager)getBaseContext().getSystemService(Context.ALARM_SERVICE);
-        Calendar calendar = null;
-        calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.add(Calendar.SECOND, 60); // first time
-        long frequency= 60 * 1000; // in ms
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), frequency, pendingIntent);
-
-        startService(myIntent);
     }
 }

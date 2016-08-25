@@ -29,28 +29,38 @@ import java.util.List;
  */
 public class MainWidget extends AppWidgetProvider {
 
-    final static String ACTION_CHANGE = "ru.startandroid.develop.p1201clickwidget.change_count";
-    final static String ACTION_OPEN_SETTINGS = "com.darthsanches.rsswidget.open_settings_action";
+    final static String ACTION_PREV = "com.darthsanches.rsswidget.prev_action";
+    final static String ACTION_NEXT = "com.darthsanches.rsswidget.next_action";
 
-    private List<JSONObject> jobs = new ArrayList<JSONObject>();
+    private static List<JSONObject> jobs;
 
-    boolean isSettings;
+    static int page;
 
-/*    @Override
+    @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgets) {
         Log.d(getClass().getName(), "refresh");
 
-        try {
-            //new FeedResponceTask(context).execute("");
-            *//*CommonStringsHelper res = new CommonStringsHelper(context);
-            jobs = RssReader.getLatestRssFeed(res);*//*
-        } catch (Exception e) {
-            Log.e("RSS ERROR", "Error loading RSS Feed Stream >> " + e.getMessage() + " //" + e.toString());
-        }
+        RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.main_widget_screen);
 
-        MainWidget.updateWidget(context, appWidgetManager, jobs);
+        Intent intent = new Intent(context, SettingsActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+        remoteViews.setOnClickPendingIntent(R.id.setting_button, pendingIntent);
+        ComponentName rssWidget = new ComponentName(context, MainWidget.class);
 
-    }*/
+        Intent prevIntent = new Intent(context, MainWidget.class);
+        prevIntent.setAction(ACTION_PREV);
+        prevIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgets[0]);
+        PendingIntent pPrevIntent = PendingIntent.getBroadcast(context, appWidgets[0], prevIntent, 0);
+        remoteViews.setOnClickPendingIntent(R.id.button_prev, pPrevIntent);
+
+
+        Intent nextIntent = new Intent(context, MainWidget.class);
+        nextIntent.setAction(ACTION_NEXT);
+        nextIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgets[0]);
+        PendingIntent pNextIntent = PendingIntent.getBroadcast(context, appWidgets[0], nextIntent, 0);
+        remoteViews.setOnClickPendingIntent(R.id.button_next, pNextIntent);
+        appWidgetManager.updateAppWidget(rssWidget, remoteViews);
+    }
 
     public static void updateWidget(Context context, AppWidgetManager appWidgetManager, List<JSONObject> jobs) {
 
@@ -58,12 +68,12 @@ public class MainWidget extends AppWidgetProvider {
 
         try {
 
-            if(!jobs.isEmpty()) {
+            if (jobs != null && !jobs.isEmpty()) {
+                MainWidget.jobs = jobs;
+                Log.d("jsaon", jobs.get(page).toString());
+                String title = (String) jobs.get(page).get("title");
 
-                Log.d("jsaon", jobs.get(0).toString());
-                String title = (String) jobs.get(0).get("title");
-
-                String text = (String) jobs.get(0).get("text");
+                String text = (String) jobs.get(page).get("text");
 
                 Log.d("updateWidget", title);
 
@@ -73,7 +83,7 @@ public class MainWidget extends AppWidgetProvider {
 
                 remoteViews.setTextViewText(R.id.text, text);
 
-                //Intent intent = new Intent(context, RssActivity.class);
+                //Intent intent = new Intent(context, SettingsActivity.class);
 
                 //PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
 
@@ -139,26 +149,16 @@ public class MainWidget extends AppWidgetProvider {
     @Override
     public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
-        if (ACTION_OPEN_SETTINGS.equals(intent.getAction())) {
-            isSettings = true;
-//            RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.main_widget_screen);
-//            remoteViews.setInt(R.id.feed_screen, "visibility", View.GONE);
-//            remoteViews.setInt(R.id.settings_screen, "visibility", View.VISIBLE);
-//            AppWidgetManager.getInstance(context).updateAppWidget(
-//                    new ComponentName(context, MainWidget.class), remoteViews);
-        } else {
-            isSettings = false;
-        }
-        Log.i("onReceive", "intent data" + intent.getAction());
-    }
-
-    public boolean isMyServiceRunning(Context ctx, Class<?> serviceClass) {
-        ActivityManager manager = (ActivityManager) ctx.getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (serviceClass.getName().equals(service.service.getClassName())) {
-                return true;
+        if (ACTION_PREV.equals(intent.getAction())) {
+            if (page != 0) {
+                page--;
+            }
+        } else if(ACTION_NEXT.equals(intent.getAction())){
+            if (jobs != null && page < jobs.size() - 1) {
+                page++;
             }
         }
-        return false;
+        updateWidget(context, AppWidgetManager.getInstance(context), jobs);
     }
+
 }
